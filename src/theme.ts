@@ -1,0 +1,126 @@
+/**
+ * Thème des synoptiques. Esprit « IHM haute performance » : gris au repos, la couleur est réservée
+ * à l'anormal (alarmes, qualité de donnée) et à une seule information de procédé, la ligne en service.
+ * Toutes les couleurs sont des variables CSS, compatibles avec les jetons de hmi-kit (data-hmi-theme).
+ * Copié tel quel dans dist/hmi-synoptic.css pour les SVG liés sans Web Component (attachSynoptic).
+ */
+export const SYNOPTIC_CSS = `
+:host, .hmi-synoptic-root {
+  --_bg: var(--hmi-syn-bg, #d4d7da);
+  --_fg: var(--hmi-fg, #1b1e21);
+  --_muted: var(--hmi-fg-muted, #5c636a);
+  --_line: var(--hmi-syn-line, #7d848b);
+  --_equip: var(--hmi-syn-equip, #f3f4f5);
+  --_run: var(--hmi-syn-run, #3b4148);
+  --_liquid: var(--hmi-syn-liquid, #9fb3c4);
+  --_flow: var(--hmi-syn-flow, #00a3cc);
+  --_a1: var(--hmi-alarm-1, #d1242f);
+  --_a2: var(--hmi-alarm-2, #e0a800);
+  --_a3: var(--hmi-alarm-3, #8250df);
+  --_a4: var(--hmi-alarm-4, #6e7781);
+  --_q: var(--hmi-quality, #8250df);
+  --_focus: var(--hmi-focus, #0969da);
+  --_font: var(--hmi-font, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif);
+  --_mono: var(--hmi-font-mono, ui-monospace, 'Cascadia Mono', Consolas, monospace);
+}
+:host([data-theme='dark']), [data-hmi-theme='dark'] .hmi-synoptic-root, .hmi-synoptic-root[data-hmi-theme='dark'] {
+  --_bg: var(--hmi-syn-bg, #1d2125);
+  --_fg: var(--hmi-fg, #e6e9ec);
+  --_muted: var(--hmi-fg-muted, #98a1aa);
+  --_line: var(--hmi-syn-line, #6b737b);
+  --_equip: var(--hmi-syn-equip, #2a2f34);
+  --_run: var(--hmi-syn-run, #c3c9cf);
+  --_liquid: var(--hmi-syn-liquid, #4a6175);
+  --_flow: var(--hmi-syn-flow, #2cc4ea);
+  --_a1: var(--hmi-alarm-1, #ff5f57);
+  --_a2: var(--hmi-alarm-2, #f2c037);
+  --_a3: var(--hmi-alarm-3, #b392f0);
+  --_a4: var(--hmi-alarm-4, #8b949e);
+  --_q: var(--hmi-quality, #c297ff);
+  --_focus: var(--hmi-focus, #4493f8);
+}
+:host { display: block; position: relative; color: var(--_fg); font-family: var(--_font); }
+:host([hidden]) { display: none; }
+svg.hmi-svg, .hmi-synoptic-root svg { display: block; width: 100%; height: auto; max-height: var(--hmi-syn-max-height, none); overflow: visible; }
+
+/* Fond et textes du dessin */
+.hmi-bg { fill: var(--_bg); }
+.hmi-txt { fill: var(--_fg); font-family: var(--_font); font-size: 12px; }
+.hmi-txt-muted { fill: var(--_muted); font-family: var(--_font); font-size: 12px; }
+.hmi-tagname { fill: var(--_muted); font-family: var(--_mono); font-size: 10.5px; letter-spacing: .04em; }
+.hmi-val { fill: var(--_fg); font-family: var(--_mono); font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.hmi-unit { fill: var(--_muted); font-family: var(--_mono); font-size: 10.5px; }
+
+/* Tuyauteries : ligne grise, flux animé en couleur procédé seulement quand il circule */
+.hmi-pipe { fill: none; stroke: var(--_line); stroke-width: 6; stroke-linejoin: round; stroke-linecap: butt; }
+.hmi-pipe-core { fill: none; stroke: var(--_bg); stroke-width: 2.5; stroke-linejoin: round; }
+.hmi-flowline { fill: none; stroke: var(--_flow); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: butt; transition: opacity .4s; }
+.hmi-flowline[data-flowing='false'] { opacity: 0; }
+.hmi-signal { fill: none; stroke: var(--_muted); stroke-width: 1; stroke-dasharray: 5 3; }
+
+/* Équipements : contour, plein foncé = en marche, contour seul = arrêt */
+.hmi-body { fill: var(--_equip); stroke: var(--_fg); stroke-width: 2; stroke-linejoin: miter; transition: fill .3s; }
+.hmi-mark { fill: none; stroke: var(--_fg); stroke-width: 2; stroke-linecap: butt; stroke-linejoin: miter; transition: stroke .3s; }
+.hmi-mark-fill { fill: var(--_fg); stroke: none; transition: fill .3s; }
+[data-state='running'] .hmi-body, [data-state='open'] .hmi-body, [data-state='on'] .hmi-body { fill: var(--_run); }
+[data-state='running'] .hmi-mark, [data-state='open'] .hmi-mark, [data-state='on'] .hmi-mark { stroke: var(--_equip); }
+[data-state='running'] .hmi-mark-fill, [data-state='open'] .hmi-mark-fill, [data-state='on'] .hmi-mark-fill { fill: var(--_equip); }
+[data-state='transit'] .hmi-body { fill: url(#hmi-hatch); }
+[data-state='fault'] .hmi-body { stroke: var(--_a1); stroke-width: 3; }
+[data-state='maintenance'] .hmi-body { stroke-dasharray: 4 3; }
+[data-state='unknown'] .hmi-body, [data-quality] .hmi-body { stroke-dasharray: 2 3; }
+.hmi-state-txt { fill: var(--_muted); font-family: var(--_mono); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; }
+[data-state='fault'] .hmi-state-txt { fill: var(--_a1); font-weight: 700; }
+
+/* Cuves et niveaux */
+.hmi-vessel { fill: var(--_equip); stroke: var(--_fg); stroke-width: 2; }
+.hmi-liquid { fill: var(--_liquid); }
+.hmi-scale { stroke: var(--_muted); stroke-width: 1; }
+.hmi-limit { stroke: var(--_muted); stroke-width: 1.5; stroke-dasharray: 3 2; }
+
+/* Barre analogique verticale (plage normale + curseur) */
+.hmi-bar-track { fill: var(--_equip); stroke: var(--_muted); stroke-width: 1; }
+.hmi-bar-normal { fill: color-mix(in srgb, var(--_muted) 28%, transparent); }
+.hmi-bar-ptr { fill: var(--_fg); }
+[data-alarm] > .hmi-bar-ptr, [data-alarm] .hmi-bar-ptr { fill: var(--_a2); }
+[data-alarm][data-priority='1'] .hmi-bar-ptr { fill: var(--_a1); }
+
+/* Indicateur d'alarme : forme + couleur + numéro de priorité (jamais la couleur seule) */
+.hmi-ind { display: none; }
+.hmi-ind[data-alarm] { display: inline; }
+.hmi-ind > .p1, .hmi-ind > .p2, .hmi-ind > .p3, .hmi-ind > .p4 { display: none; stroke: var(--_fg); stroke-width: 1; }
+.hmi-ind[data-priority='1'] > .p1 { display: inline; fill: var(--_a1); }
+.hmi-ind[data-priority='2'] > .p2 { display: inline; fill: var(--_a2); }
+.hmi-ind[data-priority='3'] > .p3 { display: inline; fill: var(--_a3); }
+.hmi-ind[data-priority='4'] > .p4 { display: inline; fill: var(--_a4); }
+.hmi-ind-p { fill: #1b1e21; font: 700 10px var(--_mono); text-anchor: middle; dominant-baseline: central; }
+.hmi-ind[data-priority='1'] .hmi-ind-p, .hmi-ind[data-priority='3'] .hmi-ind-p { fill: #fff; }
+.hmi-ind[data-ack='false'] { animation: hmi-blink 1s steps(1, end) infinite; }
+@keyframes hmi-blink { 50% { opacity: .25; } }
+
+/* Liaisons génériques sur un SVG libre */
+[data-alarm]:not(.hmi-ind):not(g) { stroke: var(--_a2); }
+[data-alarm][data-priority='1']:not(.hmi-ind):not(g) { stroke: var(--_a1); }
+[data-blink='true'] { animation: hmi-blink 1s steps(1, end) infinite; }
+text[data-quality] { fill: var(--_q); }
+[data-quality='bad']:not(text), [data-quality='stale']:not(text) { opacity: .55; }
+.hmi-qual { display: none; fill: var(--_q); font: 700 11px var(--_mono); }
+[data-quality] ~ .hmi-qual, .hmi-qual[data-quality] { display: inline; }
+
+/* Interaction */
+[role='button'] { cursor: pointer; }
+[role='button']:focus { outline: none; }
+[role='button']:focus-visible { outline: 2px solid var(--_focus); outline-offset: 3px; }
+[role='button']:hover .hmi-hit, [role='button']:focus-visible .hmi-hit { stroke: var(--_focus); stroke-opacity: .7; }
+.hmi-hit { fill: transparent; stroke: transparent; stroke-width: 1.5; stroke-dasharray: 3 3; }
+
+.hmi-flame { transform-box: fill-box; transform-origin: 50% 100%; animation: hmi-flicker 1.3s ease-in-out infinite alternate; }
+@keyframes hmi-flicker { 0% { transform: scale(1, 1); } 40% { transform: scale(.94, 1.08); } 100% { transform: scale(1.04, .93); } }
+:host([data-motion='off']) .hmi-flame, :host([data-motion='off']) [data-blink='true'], :host([data-motion='off']) .hmi-ind[data-ack='false'] { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hmi-flame { animation: none; }
+  .hmi-ind[data-ack='false'], [data-blink='true'] { animation: none; }
+  .hmi-flowline { transition: none; }
+}
+`;

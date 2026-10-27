@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>hmi-synoptic · dessin libre animé</title>
+  <link rel="icon" href="data:," />
+  <style>
+    body { margin: 0; padding: 24px; background: #d4d7da; color: #1b1e21; font: 15px/1.45 system-ui, sans-serif; }
+    main { max-width: 900px; margin: 0 auto; }
+    hmi-synoptic { display: block; border: 1px solid #1b1e21; background: #f3f4f5; }
+    p { color: #5c636a; }
+    code { font: 13px ui-monospace, monospace; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Dessin libre animé</h1>
+    <p>Le fichier <code>dessin-inkscape.svg</code> n’a que des calques nommés (<code>LT201--level</code>, <code>AG201--spin</code>, <code>FT201--flow</code>…). Les valeurs ci-dessous sont simulées dans la page.</p>
+    <hmi-synoptic id="synoptique" src="dessin-inkscape.svg" label="Réacteur R-201"></hmi-synoptic>
+  </main>
+  <script type="module">
+    import '../dist/hmi-synoptic.js';
+    const s = document.getElementById('synoptique');
+    s.config = await fetch('dessin-inkscape.config.json').then((r) => r.json());
+    let t = 0;
+    setInterval(() => {
+      t += 0.1;
+      const marche = Math.sin(t / 6) > -0.6;
+      s.update({
+        LT201: 50 + 30 * Math.sin(t / 9),
+        TT201: 70 + 15 * Math.sin(t / 7),
+        AG201: marche ? 'running' : 'stopped',
+        FV201: marche ? 60 : 0,
+        FT201: marche ? 30 + 5 * Math.sin(t) : 0,
+      });
+    }, 100);
+  </script>
+</body>
+</html>

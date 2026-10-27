@@ -1,0 +1,37 @@
+{
+  "name": "hmi-synoptic",
+  "version": "1.0.0",
+  "description": "Synoptiques animés pour le web : un Web Component qui anime vos dessins SVG (Inkscape, Figma, draw.io) avec des données temps réel. Niveaux, rotations, flux, états, alarmes ISA. Sans dépendance.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Antoine Despres",
+  "main": "./dist/hmi-synoptic.js",
+  "module": "./dist/hmi-synoptic.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/hmi-synoptic.js"
+    },
+    "./hmi-synoptic.css": "./dist/hmi-synoptic.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": true,
+  "keywords": [
+    "scada",
+    "hmi",
+    "synoptic",
+    "mimic",
+    "svg",
+    "web-components",
+    "p&id",
+    "isa-101",
+    "industrial",
+    "dashboard"
+  ]
+}

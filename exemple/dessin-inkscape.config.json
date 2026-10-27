@@ -1,0 +1,7 @@
+{
+  "LT201": { "label": "Niveau réacteur", "unit": "%", "decimals": 0 },
+  "TT201": { "label": "Température réacteur", "unit": "°C", "decimals": 1, "h": 80, "hh": 90 },
+  "AG201": { "label": "Agitateur", "map": "0:ARRÊT,1:MARCHE,running:MARCHE,stopped:ARRÊT" },
+  "FV201": { "label": "Clapet de sortie", "min": 0, "max": 100 },
+  "FT201": { "label": "Débit sortie", "max": 50 }
+}
